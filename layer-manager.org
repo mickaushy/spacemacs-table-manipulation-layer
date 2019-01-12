@@ -9,7 +9,7 @@ This file is, as its name tells, manages all =emacs-lisp= files (well, at the mo
 there is only one of it) in this repository. This file should be the one you will read
 when you need to know about this layer, and at least for the author, this file is the
 one to edit and generate =emacs-lisp= files trough =org-babel-tangle=, so-called
-[[literate programming][https://en.wikipedia.org/wiki/Literate_programming]] style.
+[[https://en.wikipedia.org/wiki/Literate_programming][literate programming]] style.
 
 When you make some changes to source blocks in this file, go to [[*Tangle][Tangle]]  section
 and follow the instruction there. You will get the =emacs-lisp= genarated.
@@ -351,12 +351,12 @@ Because this transient-state switch to 'table-editing' buffer, there are several
 
 #+NAME: t:bindings:misc
 #+CAPTION: several ways to quit transient state
-| key to quit                         | quit transient-state | quit 'table-editing' buffer                   |
-|-------------------------------------+----------------------+-----------------------------------------------|
+| key to quit                       | quit transient-state | quit 'table-editing' buffer                   |
+|-----------------------------------+----------------------+-----------------------------------------------|
 | ~RET~ (or any other undefined keys) | yes                  | no                                            |
 | ~q~                                 | yes                  | yes, with applying changes to original buffer |
 | ~Q~                                 | yes                  | yes, with aborting changes                    |
-|-------------------------------------+----------------------+-----------------------------------------------|
+|-----------------------------------+----------------------+-----------------------------------------------|
 
 The 'table-editing' buffer requires =org-src.el=; in case you don't have it,
 this transient-state can be run without it (just stay in the original buffer).
