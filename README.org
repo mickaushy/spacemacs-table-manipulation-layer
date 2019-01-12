@@ -1,0 +1,130 @@
+#+TITLE: table-manipulation layer
+
+# The maximum height of the logo should be 200 pixels.
+# [[img/table-manipulation.png]]
+
+# TOC links should be GitHub style anchors.
+* Table of Contents                                        :TOC_4_gh:noexport:
+- [[#description][Description]]
+  - [[#features][Features:]]
+- [[#install][Install]]
+- [[#key-bindings][Key bindings]]
+- [[#for-contributers-and-power-users][For Contributers and Power-Users]]
+
+* Description
+This layer adds support for editing =table.el= more intuitive ways through
+=table-manipulation-transient-state=.
+
+** Features:
+The followings are the list of commands been implemented as a transient-state.
+See [[*Key bindings][Key bindings]] for how-to-use.
+- jump to next/previous cells
+- split cells vertically/horizontally
+- resize cells
+- merge cells
+- justify contents of cells
+
+=table-manipulation-transient-state= enters a small table-editing buffer when executed.
+You may quit the transient-state but stay to the table-editing buffer.
+The _table-editing buffer_ is good for editing _data_ in each cells,
+while _transient-state_ works well for editing _structures_ of table.
+
++-----------+-----------------------+-------------+-----------+------------+
+|-> SPC o T |---------------------> |------------>|---------->|----------v |
++-----------+-----------------------+-------------+-----------+------------+
+|           | -> org-edit-table.el  |             |           |            |
+|           |                       |   #<table   |-> SPC o T |  #<table   |
+|#<Original |      <- ,, / ,c       |   editing   |           |manipulation|
+|  Buffer>  |      (save tbl)       |   Buffer>   |           | transient  |
+|           |      <- ,k / ,a       |             |  <- RET   |   state>   |
+|           |      (abort tbl)      |             |           |            |
++-----------+-----------------------+-------------+-----------+------------+
+|^----------|<--------------------- |<------------|<----------|<- q / Q    |
++-----------+-----------------------+-------------+-----------+------------+
+
+Note that ~SPC o T~ is [[c:config-example][an example]] of key binding to =dotspacemacs-configuration-layers= in this table.
+
+* Install
+To install this private configuration layer, clone it to =.../path/to/.emacs.d/private/table-manipulation=.
+Or, follow the instruction written in [[file:layer-manager.org::*Install%20This%20Layer][this file]].
+
+To use this configuration layer, add it to your =~/.spacemacs=. You will need to
+add =table-manipulation= to the existing =dotspacemacs-configuration-layers= list in this
+file.
+
+Add following setting in =dotspacemacs/user-config= to enable key binding.
+="oT"= is one example (o is vacant for user-defined command); so customize whatever you prefer.
+
+#+NAME: c:config-example
+#+BEGIN_SRC emacs-lisp :eval never :exports code
+  (spacemacs/set-leader-keys "oT"
+    'spacemacs/table-manipulation-transient-state/body)
+#+END_SRC
+
+* Key bindings
+
+#+CAPTION: Key bindings for =table-manipulation-transient-state=
+| Key Binding | Description                                                            |
+|-------------+------------------------------------------------------------------------|
+| ~n~         | jump to next cell                                                      |
+| ~p~         | jump to previous cell                                                  |
+|-------------+------------------------------------------------------------------------|
+| ~k~         | go up                                                                  |
+| ~j~         | go down                                                                |
+| ~h~         | go left                                                                |
+| ~l~         | go right                                                               |
+|-------------+------------------------------------------------------------------------|
+| ~\vert~         | horizontally split cell                                                |
+| ~-~         | vertically split cell                                                  |
+|-------------+------------------------------------------------------------------------|
+| ~H~         | narrow cell                                                            |
+| ~L~         | widen cell                                                             |
+| ~K~         | shorten cell                                                           |
+| ~J~         | heighten cell                                                          |
+|-------------+------------------------------------------------------------------------|
+| ~a~         | merge cell to the left                                                 |
+| ~d~         | merge cell to the right                                                |
+| ~w~         | merge cell  above                                                      |
+| ~s~         | merge cell below                                                       |
+|-------------+------------------------------------------------------------------------|
+| ~cl~        | justify cell to left                                                   |
+| ~cc~        | justify cell to center                                                 |
+| ~cr~        | justify cell to right                                                  |
+| ~ct~        | justify cell to top                                                    |
+| ~cm~        | justify cell to middle                                                 |
+| ~cb~        | justify cell to bottom                                                 |
+| ~cn~        | justify cell to none                                                   |
+|-------------+------------------------------------------------------------------------|
+| ~Cl~        | justify column to left                                                 |
+| ~Cc~        | justify column to center                                               |
+| ~Cr~        | justify column to right                                                |
+| ~Ct~        | justify column to top                                                  |
+| ~Cm~        | justify column to middle                                               |
+| ~Cb~        | justify column to bottom                                               |
+| ~Cn~        | justify column to none                                                 |
+|-------------+------------------------------------------------------------------------|
+| ~Rl~        | justify row to left                                                    |
+| ~Rc~        | justify row to center                                                  |
+| ~Rr~        | justify row to right                                                   |
+| ~Rt~        | justify row to top                                                     |
+| ~Rm~        | justify row to middle                                                  |
+| ~Rb~        | justify row to bottom                                                  |
+| ~Rn~        | justify row to none                                                    |
+|-------------+------------------------------------------------------------------------|
+| ~RET~       | quit transient-state only                                              |
+| ~q~         | quit transient-state and the table-editing buffer                      |
+| ~Q~         | quit transient-state and abort the changes in the table-editing buffer |
+| ~u~         | undo                                                                   |
+| ~C-r~       | redo                                                                   |
+|-------------+------------------------------------------------------------------------|
+
+* For Contributers and Power-Users
+There is more detailed documentation in [[file:layer-manager.org][Layer Manager]] file.
+This may be useful for contributers as well as for power-users who wants to modify
+key bindings as you like.
+
+# Use GitHub URLs if you wish to link a Spacemacs documentation file or its heading.
+# Examples:
+# [[https://github.com/syl20bnr/spacemacs/blob/master/doc/VIMUSERS.org#sessions]]
+# [[https://github.com/syl20bnr/spacemacs/blob/master/layers/%2Bfun/emoji/README.org][Link to Emoji layer README.org]]
+# If space-doc-mode is enabled, Spacemacs will open a local copy of the linked file.

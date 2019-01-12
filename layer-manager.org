@@ -1,0 +1,462 @@
+#+TITLE:Commentary of Table-Manipulation Layer
+#+AUTHOR:mickaushy
+#+EMAIL:mickaushy@gmail.com
+#+STARTUP: content indent align inlineimages
+#+LINK: SPACEMACS-DEVELOP https://github.com/syl20bnr/spacemacs/blob/develop/
+
+* About This File
+This file is, as its name tells, manages all =emacs-lisp= files (well, at the moment
+there is only one of it) in this repository. This file should be the one you will read
+when you need to know about this layer, and at least for the author, this file is the
+one to edit and generate =emacs-lisp= files trough =org-babel-tangle=, so-called
+[[literate programming][https://en.wikipedia.org/wiki/Literate_programming]] style.
+
+When you make some changes to source blocks in this file, go to [[*Tangle][Tangle]]  section
+and follow the instruction there. You will get the =emacs-lisp= genarated.
+One of the great point of doing this is, you can write document and code at the
+same time.
+
+* Install This Layer
+Table-Manipulation layer is a _Private_ layer.
+This means that the layer won't be installed as other official layers will be.
+
+This repository is supposed to be cloned somewhere on your computer.
+Of course at the beginning =emacs= has no idea where this private layer is.
+
+To let emacs notice this layer, execute the following code block to copy
+all contents to =${EMACSDIR}/private/table-manipulation/=.
+Which is, *run* =M-x= =org-babel-execute-src-block= *at anywhere on the following
+code block*. You need =emacs= and its user-directory to execute the block. Normally
+=spacemacs= sets this directory by default. If you have preference where to install
+this layer, then manually copy/symlink all the contents to the place you want.
+
+#+BEGIN_SRC sh :exports both :results output :shebang "#!/bin/bash" :eval no-export
+  LAYER=table-manipulation
+  EMACSDIR=$(emacs -Q --batch --eval="(princ user-emacs-directory)") # ~/.emacs.d/
+  PRIVATEDIR=${HOME}/${EMACSDIR#*/}private                           # ${EMACSDIR#./} becomes .emacs.d/
+  LAYERDIR=${PRIVATEDIR}/${LAYER}
+
+  if [ ! -d "${PRIVATEDIR}" ]; then
+      mkdir "${PRIVATEDIR}"
+  fi
+
+  if [ ! -d "${LAYERDIR}" ]; then
+      mkdir "${LAYERDIR}"
+  fi
+
+  cp -Rv $(pwd)/* ${LAYERDIR}/
+#+END_SRC
+
+#+RESULTS:
+
+once you run this, results will be shown above - check on your eyes that everything is correct.
+
+And another thing: be sure to [[file:README.org::*Install][set your favorite key bindings]].
+
+* TODO [#B] Comment-Style Commentary in =packages.el=
+The author haven't touch the commentary area yet.
+
+#+NAME: package-commentary
+#+BEGIN_SRC emacs-lisp :results silent :exports code :noweb yes :eval never
+  ;; See the Spacemacs documentation and FAQs for instructions on how to implement
+  ;; a new layer:
+  ;;
+  ;;   SPC h SPC layers RET
+  ;;
+  ;;
+  ;; Briefly, each package to be installed or configured by this layer should be
+  ;; added to `table-manipulation-packages'. Then, for each package PACKAGE:
+  ;;
+  ;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
+  ;;   function `table-manipulation/init-PACKAGE' to load and initialize the package.
+
+  ;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
+  ;;   define the functions `table-manipulation/pre-init-PACKAGE' and/or
+  ;;   `table-manipulation/post-init-PACKAGE' to customize the package as it is loaded.
+#+END_SRC
+
+* TODO [#C] Additional Packages
+There is no need to add any packages for this layer yet.
+The author is concidering the addition of =org= (or smaller =org-src=).
+If someone emphasize it to be added, then some work should be done.
+
+#+NAME: additional-packages
+#+BEGIN_SRC emacs-lisp :results silent :exports code :noweb yes :eval never
+  (defconst table-manipulation-packages
+    '()
+    "The list of Lisp packages required by the table-manipulation layer.
+
+  Each entry is either:
+
+  1. A symbol, which is interpreted as a package to be installed, or
+
+  2. A list of the form (PACKAGE KEYS...), where PACKAGE is the
+      name of the package to be installed or loaded, and KEYS are
+      any number of keyword-value-pairs.
+
+      The following keys are accepted:
+
+      - :excluded (t or nil): Prevent the package from being loaded
+        if value is non-nil
+
+      - :location: Specify a custom installation location.
+        The following values are legal:
+
+        - The symbol `elpa' (default) means PACKAGE will be
+          installed using the Emacs package manager.
+
+        - The symbol `local' directs Spacemacs to load the file at
+          `./local/PACKAGE/PACKAGE.el'
+
+        - A list beginning with the symbol `recipe' is a melpa
+          recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
+#+END_SRC
+
+* Transient-State
+:PROPERTIES:
+:header-args:emacs-lisp: :results silent :exports code :noweb yes :eval never
+:END:
+** about
+This is the first functionality been created for this layer (or rather, after creating the functionality
+I decided to make it a private layer). =table.el= comes with =emacs= and available without anything.
+
+Following motions are supported through following functions shipped with =table.el=:
+- jump to next/previous cells \mdash =table-forward-cell= / =table-backward-cell=
+- split cells vertically/horizontally \mdash =table-split-cell-vertically= / =table-split-cell-horizontally=
+- resize cells \mdash  =table-narrow-cell= / =table-widen-cell= / =table-shorten-cell= / =table-heighten-cell=
+- merge cells \mdash  =table-span-cell=
+- justify contents of cells \mdash =table-justify-cell=
+
+To check the bindings of these commands, go to [[*keybindings in transient-state][keybindings in transient-state]] section.
+To check the text-area always shown in transient state, go to [[*appearance of transient-state][appearance of transient-state]].
+
+You can visit [[https://github.com/emacs-mirror/emacs/blob/master/lisp/textmodes/table.el][the online definition of table.el]] here.
+
+** define transient state
+Transient-state is decleared here.
+This is [[SPACEMACS-DEVELOP:core/core-transient-state.el#L116][an external link to the definition]] of =spacemacs|define-transient-state=.
+
+#+NAME: transient-state:body
+#+BEGIN_SRC emacs-lisp
+  (spacemacs|define-transient-state table-manipulation
+    :title "Table.el Manipulation Transient State"
+    :on-enter
+    <<transient-state:on-enter>>
+    :on-exit
+    <<transient-state:on-exit>>
+    :doc
+    <<transient-state:doc>>
+    :bindings
+    <<transient-state:bindings>>
+    )
+#+END_SRC
+
+** define transient-state-specific functions
+There is no need to define any functions for the transient-state yet.
+
+#+NAME: transient-state:funcs
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
+** appearance of transient-state
+This menu comes up when you enter =table-manipulation-transient-state=.
+This is heavily asociated with :bindings \mdash therefore when bindings are changed,
+this menu also edited to match commands and the following string.
+
+The author doesn't have enough knowledge about the syntax (like =^^=) in this docstring,
+even it has been written after existing transient states.
+There might be some better ways to pretty-print this string. Any advice are apreciated
+via github/email/twitter. At least when it is executed, it tidies up in a way it should.
+
+#+NAME: transient-state:doc
+#+BEGIN_SRC emacs-lisp
+  (concat "
+     [_q_] apply change & quit src-block  [_RET_] quit, stay src-block
+     [_Q_] ABORT CHANGE & quit src-block
+        < [_p_rev]  ───────────  Focus cell  ───────────  [_n_ext] >
+  ──────────────────────────────────────────────────────────────────────────
+   Resize^^               Merge^^          Justify (Key Combo)^^^^
+  ───────^^────────────  ──────^^───────  ────────────────────^^^^──────────────────
+     [_H_] + | - [_L_]         [_w_]          1. tidy [c]ell / [R]ow  /  [C]olumn
+    - [_K_]  |            [_a_]   [_d_]                    ↓
+  ---------+               [_s_]          2.   by [l]eft,  [c]enter, [r]ight
+    + [_J_]                                    or [t]op,   [m]iddle, [b]ottom
+  ──────────────────────────────────────────────────────────────────────────
+     Split:     [_|_] /  [_-_]               [_k_]
+     Undo/Redo: [_u_] / [_C-r_]        [_h_]   [_j_]   [_l_]")
+#+END_SRC
+
+** keybindings in transient-state [0/2]
+*** about
+One good things about transient-state is that you don't have to worry about
+keymap overlapping. Since =table.el= has no major mode (which is cool: =table.el= runs
+anywhere inside emacs), setting global keymapping for =table.el= can easilly be distracting
+ for other important key bindings.
+
+*** focus-bindings
+On a table, you can go next/previous cells by the following commands.
+Commands like =table-upward-cell=, =table-downward-cell= might be useful
+to define, but because =table.el= table is too flexible, it is hard to count
+row/column of the table just like this. If someday someone defined these,
+using ~h/j/k/l~ bindings (which currrently used in [[*cursor-bindings][cursor-bindings]])
+might sounds more reasonable.
+
++-------+-------------------------+------+
+|   1   |          2 3 4          |  5   |
+|       +---------------+---------+      |
+|       |this is a table|         |      |
+|       |editing buffer.|         |      |
++---+---+------+--------+-+-------+------+
+| a | b |      |          |       |      |
++---+---+------+    c     +-------+ d e  |
+| f | g |      |          |       |      |
+|   |   +--+---+----------+----+--+------+
++---+---+  |                   |  | i j  |
+|   |   |  |         h         |  |      |
++---+---+--+-------------------+--+------+
+
+#+NAME: bindings:focus
+#+BEGIN_SRC emacs-lisp
+    ("n" table-forward-cell)
+    ("p" table-backward-cell)
+
+#+END_SRC
+
+*** cursor-bindings
+These are simple up/down/left/right keybindings from vim/evil-mode.
+Another candidates for these are ~<up>/<down>/<left>/<right>~.
+There are several functions that looks very similar to these commands below:
+eg) =forward-line=, =right-char=, =left-char= (maybe more).
+If Those seems more reasonable, then replacing functions should be considerd.
+
+#+NAME: bindings:cursor
+#+BEGIN_SRC emacs-lisp
+    ("k" previous-line)
+    ("j" next-line)
+    ("h" backward-char)
+    ("l" forward-char)
+
+#+END_SRC
+
+*** split-bindings
+Splitting commands are little complicated.
+
+ =table-split-cell-vertically= is fine, it simply insert newline with horizontall line ~-~
+just above cursor. This doesn't overlap text inside the cell.
+
+=table-split-cell-horizontally= is rather hard; if the cell is empty, then the command
+doesn't issue prompt. However, the cell has some words (even your vertical line won't
+interrupt these words), the command asks you where the words should go.
+If =split=, new vertical lines are added just the left side of cursor. (width of two new cells
+are increased by one).
+If =left=, keeping the width of the cell, it inserts vertical lines, but all the text in the
+original cell are pushed into left side of the new cell, clearing the right side.
+And if =right=, the opposite of =left= occurs. You may want to check how it works;
+try on this table here. See what will happen if you do ~|~ on the left/right space of
+the cell =2 3 4=, or how the cell changes its height when you do ~|~ on the cell with texts.
+
+#+NAME: t:table-example
++-------+-------------------------+------+
+|   1   |          2 3 4          |  5   |
+|       +---------------+---------+      |
+|       |this is a table|         |      |
+|       |editing buffer.|         |      |
++---+---+------+--------+-+-------+------+
+| a | b |      |          |       |      |
++---+---+------+    c     +-------+ d e  |
+| f | g |      |          |       |      |
+|   |   +--+---+----------+----+--+------+
++---+---+  |                   |  | i j  |
+|   |   |  |         h         |  |      |
++---+---+--+-------------------+--+------+
+
+The author tried to implement these =split - left - right=  variants for each key bindings, but
+=table-split-cell-horizontally= doesn't accept arguments to select which variants to be run.
+But the good news is that even if the prompt is issued, transient-state are not interrupted
+by entering these variants.
+
+#+NAME: bindings:split
+#+BEGIN_SRC emacs-lisp
+    ("|" table-split-cell-horizontally)
+    ("-" table-split-cell-vertically)
+
+#+END_SRC
+
+*** TODO [#C] resize-bindings
+These commands expands/shrinks cell using the bottom/the left borderline of the cell.
+Maybe [[transient-state:doc][the docstring]] is a bit difficult to understand, any suggestions to make it better
+are welcome.
+
+#+NAME: bindings:resize
+#+BEGIN_SRC emacs-lisp
+    ("H" (table-narrow-cell 1))
+    ("L" (table-widen-cell 1))
+    ("K" (table-shorten-cell 1))
+    ("J" (table-heighten-cell 1))
+
+#+END_SRC
+
+*** merge-bindings
+These commands try to merge cells that share the same sides.
+These commands fail when the cell cannot find the cell in that direction,
+or fail when the sctructure of cell is different.
+You can try how they work [[t:table-example][on this table]].
+
+#+NAME: bindings:merge
+#+BEGIN_SRC emacs-lisp
+    ("a" (table-span-cell 'left))
+    ("d" (table-span-cell 'right))
+    ("w" (table-span-cell 'above))
+    ("s" (table-span-cell 'below))
+
+#+END_SRC
+
+*** justify-bindings
+These are little long definitions, but contents are simple.
+First specify =cell/Column/Row= to justify their contents,
+then give justification direction.
+
+The author have defined justification =none=, but not included in [[transient-state:doc][the docstring]].
+
+#+NAME: bindings:justify
+#+BEGIN_SRC emacs-lisp
+    ("cl" (table-justify-cell 'left))
+    ("cc" (table-justify-cell 'center))
+    ("cr" (table-justify-cell 'right))
+    ("ct" (table-justify-cell 'top))
+    ("cm" (table-justify-cell 'middle))
+    ("cb" (table-justify-cell 'bottom))
+    ("cn" (table-justify-cell 'none))
+
+    ("Cl" (table-justify-column 'left))
+    ("Cc" (table-justify-column 'center))
+    ("Cr" (table-justify-column 'right))
+    ("Ct" (table-justify-column 'top))
+    ("Cm" (table-justify-column 'middle))
+    ("Cb" (table-justify-column 'bottom))
+    ("Cn" (table-justify-column 'none))
+
+    ("Rl" (table-justify-row 'left))
+    ("Rc" (table-justify-row 'center))
+    ("Rr" (table-justify-row 'right))
+    ("Rt" (table-justify-row 'top))
+    ("Rm" (table-justify-row 'middle))
+    ("Rb" (table-justify-row 'bottom))
+    ("Rn" (table-justify-row 'none))
+
+#+END_SRC
+
+*** TODO [#A] misc. bindings
+Because this transient-state switch to 'table-editing' buffer, there are several ways to quit the state.
+
+#+NAME: t:bindings:misc
+#+CAPTION: several ways to quit transient state
+| key to quit                         | quit transient-state | quit 'table-editing' buffer                   |
+|-------------------------------------+----------------------+-----------------------------------------------|
+| ~RET~ (or any other undefined keys) | yes                  | no                                            |
+| ~q~                                 | yes                  | yes, with applying changes to original buffer |
+| ~Q~                                 | yes                  | yes, with aborting changes                    |
+|-------------------------------------+----------------------+-----------------------------------------------|
+
+The 'table-editing' buffer requires =org-src.el=; in case you don't have it,
+this transient-state can be run without it (just stay in the original buffer).
+In this case, all of ~RET/q/Q~ act the same.
+
+TODO: [2019-01-13 Sun 06:40] Maybe ~RET~ is not the very good option; when hit ~RET~
+in the transient-sttate, it also returns as it does in the 'table-editing' buffer,
+so it can change the table shape.
+
+The boolean value =org-edit?= asks the existance of function =org-edit-table.el=.
+This value is defined [[transient-state:on-enter][here]].
+
+Undo/redo functionality can be used as you can in evil-mode buffer.
+Someone from emacs holy-mode, for example, wants to change them.
+
+#+NAME: bindings:misc
+#+BEGIN_SRC emacs-lisp
+    ("RET" (message "quit transient-state; you may exit from src-block with ,c(save)/,k(abort).") :exit t)
+    ("q" (when org-edit? (org-edit-src-exit) (message "table edited."))             :exit t)
+    ("Q" (when org-edit? (org-edit-src-abort) (message "change in table aborted.")) :exit t)
+    ("u" undo-tree-undo)
+    ("C-r" undo-tree-redo)
+
+#+END_SRC
+
+*** full bindings
+All bindings are gatherd here.
+
+#+NAME: transient-state:bindings
+#+BEGIN_SRC emacs-lisp
+  <<bindings:focus>>
+  <<bindings:cursor>>
+  <<bindings:split>>
+  <<bindings:resize>>
+  <<bindings:merge>>
+  <<bindings:justify>>
+  <<bindings:misc>>
+#+END_SRC
+
+** function to be run just after /entering/ transient-state
+This function is fun after entering the transient-state.
+First a variable =org-edit?= are set, which is used several times in other sections.
+
+The =if= section asks whether you are already in the 'table-editing' buffer.
+If so, just put the message. If not, which is the first time you run the transient-state,
+new 'table-editing' buffer opens, then change face to "org-table" (only when you have =org-src.el=).
+
+If you don't like the color of "org-table" face, uncomment the bottom line
+and comment out =(buffer-face-mode-invoke "org-table" 1)=.
+ (=(buffer-face-mode -1)= turns on the default face).
+The author use =text-mode= with =variable-pitch-mode=, changing face is necessary for this reason.
+
+#+NAME: transient-state:on-enter
+#+BEGIN_SRC emacs-lisp
+  (progn
+    (setq org-edit?
+          (fboundp 'org-edit-table.el))
+    (if (string-match "^\*Org Src .*\[ table \]\*$" (buffer-name))
+        (message "stay in current src-buffer.")
+      (when org-edit? ; else
+        (org-edit-table.el)
+        (buffer-face-mode-invoke "org-table" 1)
+        ;; (buffer-face-mode -1) ;; force fixed-pitch
+        )))
+#+END_SRC
+
+** function to be run just after /exitting/ transient-state
+There are nothing to be decleared yet.
+
+#+NAME: transient-state:on-exit
+#+BEGIN_SRC emacs-lisp
+  nil
+#+END_SRC
+* Tangle
+[[package-generator][The code area]] are executed via =M-x= =org-babel-tangle= to generate =packages.el= from this file.
+
+#+NAME: package-generator
+#+BEGIN_SRC emacs-lisp :tangle packages.el :noweb no-export
+  ;;; packages.el --- table-manipulation layer packages file for Spacemacs.
+  ;;
+  ;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+  ;;
+  ;; Author: mickaushy <mickaushy@gmail.com>
+  ;; URL: https://github.com/mickaushy/spacemacs-table-manipulation-layer
+  ;;
+  ;; This file is not part of GNU Emacs.
+  ;;
+  ;;; License: GPLv3
+
+  ;;; Commentary:
+
+  <<package-commentary>>
+
+  ;;; Code:
+
+  <<additional-packages>>
+
+  <<transient-state:funcs>>
+
+  <<transient-state:body>>
+
+  ;;; packages.el ends here
+#+END_SRC
