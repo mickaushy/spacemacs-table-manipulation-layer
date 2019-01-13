@@ -1,7 +1,7 @@
 #+TITLE: table-manipulation layer
 
+#+STARTUP: content indent align inlineimages entitiespretty
 # The maximum height of the logo should be 200 pixels.
-# [[img/table-manipulation.png]]
 
 # TOC links should be GitHub style anchors.
 * Table of Contents                                        :TOC_4_gh:noexport:
@@ -29,6 +29,8 @@ You may quit the transient-state but stay to the table-editing buffer.
 The _table-editing buffer_ is good for editing _data_ in each cells,
 while _transient-state_ works well for editing _structures_ of table.
 
+[[./img/table-manipulation.png]]
+:DIAGRAM:
 +-----------+-----------------------+-------------+-----------+------------+
 |-> SPC o T |---------------------> |------------>|---------->|----------v |
 +-----------+-----------------------+-------------+-----------+------------+
@@ -41,11 +43,12 @@ while _transient-state_ works well for editing _structures_ of table.
 +-----------+-----------------------+-------------+-----------+------------+
 |^----------|<--------------------- |<------------|<----------|<- q / Q    |
 +-----------+-----------------------+-------------+-----------+------------+
+:END:
 
 Note that ~SPC o T~ is [[c:config-example][an example]] of key binding to =dotspacemacs-configuration-layers= in this table.
 
 * Install
-To install this private configuration layer, clone it to =.../path/to/.emacs.d/private/table-manipulation=.
+To install this private configuration layer, clone it under =.../path/to/.emacs.d/private/=.
 Or, follow the instruction written in [[file:layer-manager.org::*Install%20This%20Layer][this file]].
 
 To use this configuration layer, add it to your =~/.spacemacs=. You will need to
@@ -62,8 +65,8 @@ Add following setting in =dotspacemacs/user-config= to enable key binding.
 #+END_SRC
 
 * Key bindings
+Key bindings for =table-manipulation-transient-state=.
 
-#+CAPTION: Key bindings for =table-manipulation-transient-state=
 | Key Binding | Description                                                            |
 |-------------+------------------------------------------------------------------------|
 | ~n~         | jump to next cell                                                      |

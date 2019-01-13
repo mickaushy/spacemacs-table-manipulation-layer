@@ -1,7 +1,7 @@
 #+TITLE:Commentary of Table-Manipulation Layer
 #+AUTHOR:mickaushy
 #+EMAIL:mickaushy@gmail.com
-#+STARTUP: content indent align inlineimages
+#+STARTUP: content indent align inlineimages entitiespretty
 #+LINK: SPACEMACS-DEVELOP https://github.com/syl20bnr/spacemacs/blob/develop/
 
 * About This File
@@ -351,12 +351,12 @@ Because this transient-state switch to 'table-editing' buffer, there are several
 
 #+NAME: t:bindings:misc
 #+CAPTION: several ways to quit transient state
-| key to quit                       | quit transient-state | quit 'table-editing' buffer                   |
-|-----------------------------------+----------------------+-----------------------------------------------|
+| key to quit                         | quit transient-state | quit 'table-editing' buffer                   |
+|-------------------------------------+----------------------+-----------------------------------------------|
 | ~RET~ (or any other undefined keys) | yes                  | no                                            |
 | ~q~                                 | yes                  | yes, with applying changes to original buffer |
 | ~Q~                                 | yes                  | yes, with aborting changes                    |
-|-----------------------------------+----------------------+-----------------------------------------------|
+|-------------------------------------+----------------------+-----------------------------------------------|
 
 The 'table-editing' buffer requires =org-src.el=; in case you don't have it,
 this transient-state can be run without it (just stay in the original buffer).
@@ -364,7 +364,9 @@ In this case, all of ~RET/q/Q~ act the same.
 
 TODO: [2019-01-13 Sun 06:40] Maybe ~RET~ is not the very good option; when hit ~RET~
 in the transient-sttate, it also returns as it does in the 'table-editing' buffer,
-so it can change the table shape.
+so it can change the table shape. Do not forget to change RET in:
+- =layer-manager.org= then tangle it
+- =README.org= including [[./img/table-manipulation.png][this image]]
 
 The boolean value =org-edit?= asks the existance of function =org-edit-table.el=.
 This value is defined [[transient-state:on-enter][here]].
