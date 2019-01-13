@@ -1,7 +1,7 @@
 #+TITLE:Commentary of Table-Manipulation Layer
 #+AUTHOR:mickaushy
 #+EMAIL:mickaushy@gmail.com
-#+STARTUP: content indent align inlineimages
+#+STARTUP: content indent align inlineimages entitiespretty
 #+LINK: SPACEMACS-DEVELOP https://github.com/syl20bnr/spacemacs/blob/develop/
 
 * About This File
@@ -9,7 +9,7 @@ This file is, as its name tells, manages all =emacs-lisp= files (well, at the mo
 there is only one of it) in this repository. This file should be the one you will read
 when you need to know about this layer, and at least for the author, this file is the
 one to edit and generate =emacs-lisp= files trough =org-babel-tangle=, so-called
-[[literate programming][https://en.wikipedia.org/wiki/Literate_programming]] style.
+[[https://en.wikipedia.org/wiki/Literate_programming][literate programming]] style.
 
 When you make some changes to source blocks in this file, go to [[*Tangle][Tangle]]  section
 and follow the instruction there. You will get the =emacs-lisp= genarated.
@@ -364,7 +364,9 @@ In this case, all of ~RET/q/Q~ act the same.
 
 TODO: [2019-01-13 Sun 06:40] Maybe ~RET~ is not the very good option; when hit ~RET~
 in the transient-sttate, it also returns as it does in the 'table-editing' buffer,
-so it can change the table shape.
+so it can change the table shape. Do not forget to change RET in:
+- =layer-manager.org= then tangle it
+- =README.org= including [[./img/table-manipulation.png][this image]]
 
 The boolean value =org-edit?= asks the existance of function =org-edit-table.el=.
 This value is defined [[transient-state:on-enter][here]].
