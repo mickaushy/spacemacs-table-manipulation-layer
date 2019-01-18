@@ -3,7 +3,7 @@
 ;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
 ;;
 ;; Author: mickaushy <mickaushy@gmail.com>
-;; URL: https://github.com/mickaushy/table-manipulation
+;; URL: https://github.com/mickaushy/spacemacs-table-manipulation-layer
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -30,7 +30,7 @@
 ;;; Code:
 
 (defconst table-manipulation-packages
-  '()
+  '(table)
   "The list of Lisp packages required by the table-manipulation layer.
 
 Each entry is either:
@@ -73,6 +73,8 @@ Each entry is either:
         (buffer-face-mode-invoke "org-table" 1)
         ;; (buffer-face-mode -1) ;; force fixed-pitch
         )))
+  :on-exit
+  nil
   :doc
   (concat "
      [_q_] apply change & quit src-block  [_RET_] quit, stay src-block
@@ -91,20 +93,25 @@ Each entry is either:
   :bindings
   ("n" table-forward-cell)
   ("p" table-backward-cell)
+  
   ("k" previous-line)
   ("j" next-line)
   ("h" backward-char)
   ("l" forward-char)
+  
   ("|" table-split-cell-horizontally)
   ("-" table-split-cell-vertically)
+  
   ("H" (table-narrow-cell 1))
   ("L" (table-widen-cell 1))
   ("K" (table-shorten-cell 1))
   ("J" (table-heighten-cell 1))
+  
   ("a" (table-span-cell 'left))
   ("d" (table-span-cell 'right))
   ("w" (table-span-cell 'above))
   ("s" (table-span-cell 'below))
+  
   ("cl" (table-justify-cell 'left))
   ("cc" (table-justify-cell 'center))
   ("cr" (table-justify-cell 'right))
@@ -128,11 +135,33 @@ Each entry is either:
   ("Rm" (table-justify-row 'middle))
   ("Rb" (table-justify-row 'bottom))
   ("Rn" (table-justify-row 'none))
+  
   ("RET" (message "quit transient-state; you may exit from src-block with ,c(save)/,k(abort).") :exit t)
   ("q" (when org-edit? (org-edit-src-exit) (message "table edited."))             :exit t)
   ("Q" (when org-edit? (org-edit-src-abort) (message "change in table aborted.")) :exit t)
   ("u" undo-tree-undo)
   ("C-r" undo-tree-redo)
+  
   )
+
+(defun table-manipulation/init-table ()
+  (use-package table
+    :config
+    (progn
+      (spacemacs/declare-prefix "xT" "Table.el")
+      (spacemacs/set-leader-keys
+        "xT." 'spacemacs/table-manipulation-transient-state/body
+        "xTc" 'table-capture
+        "xTC" 'orgtbl-to-table.el
+        "xTd" 'table-release
+        "xTe" 'table-generate-source
+        "xTi" 'table-query-dimension
+        "xTn" 'table-insert
+        "xTr" 'table-recognize-table
+        "xTR" 'table-recognize
+        "xTu" 'table-unrecognize-table
+        "xTU" 'table-unrecognize
+        ))
+    ))
 
 ;;; packages.el ends here

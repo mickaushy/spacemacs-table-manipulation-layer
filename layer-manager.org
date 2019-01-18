@@ -1,7 +1,7 @@
 #+TITLE:Commentary of Table-Manipulation Layer
 #+AUTHOR:mickaushy
 #+EMAIL:mickaushy@gmail.com
-#+STARTUP: content indent align inlineimages entitiespretty
+#+STARTUP: content indent align noinlineimages entitiespretty
 #+LINK: SPACEMACS-DEVELOP https://github.com/syl20bnr/spacemacs/blob/develop/
 
 * About This File
@@ -83,7 +83,7 @@ If someone emphasize it to be added, then some work should be done.
 #+NAME: additional-packages
 #+BEGIN_SRC emacs-lisp :results silent :exports code :noweb yes :eval never
   (defconst table-manipulation-packages
-    '()
+    '(table)
     "The list of Lisp packages required by the table-manipulation layer.
 
   Each entry is either:
@@ -366,7 +366,7 @@ TODO: [2019-01-13 Sun 06:40] Maybe ~RET~ is not the very good option; when hit ~
 in the transient-sttate, it also returns as it does in the 'table-editing' buffer,
 so it can change the table shape. Do not forget to change RET in:
 - =layer-manager.org= then tangle it
-- =README.org= including [[./img/table-manipulation.png][this image]]
+- =README.org= including [[./img/table-manipulation.png][this image]], which is defined [[*explanatory table][here]].
 
 The boolean value =org-edit?= asks the existance of function =org-edit-table.el=.
 This value is defined [[transient-state:on-enter][here]].
@@ -384,6 +384,23 @@ Someone from emacs holy-mode, for example, wants to change them.
 
 #+END_SRC
 
+**** explanatory table                                          :noexport:
+Because =table.el= tables in org documents on Github is quite messy, screenshot is taken
+to include the table in README. Take shots after updating this table.
+
++------------+-----------------------+-------------+--------------+------------+
+|-> SPC x T .|---------------------> |------------>|------------> |----------v |
++------------+-----------------------+-------------+--------------+------------+
+|            | -> org-edit-table.el  |             |              |            |
+|            |                       |   #<table   | -> SPC x T . |   (table   |
+| #<Original |      <- ,, / ,c       |   editing   |              |manipulation|
+|  Buffer>   |      (save tbl)       |   Buffer>   |              | transient  |
+|            |      <- ,k / ,a       |             |    <- RET    |   state)   |
+|            |      (abort tbl)      |             |              |            |
++------------+-----------------------+-------------+--------------+------------+
+|^---------- |<--------------------- |<------------|<------------ |<- q / Q    |
++------------+-----------------------+-------------+--------------+------------+
+
 *** full bindings
 All bindings are gatherd here.
 
@@ -399,7 +416,6 @@ All bindings are gatherd here.
 #+END_SRC
 
 ** function to be run just after /entering/ transient-state
-This function is fun after entering the transient-state.
 First a variable =org-edit?= are set, which is used several times in other sections.
 
 The =if= section asks whether you are already in the 'table-editing' buffer.
@@ -432,6 +448,37 @@ There are nothing to be decleared yet.
 #+BEGIN_SRC emacs-lisp
   nil
 #+END_SRC
+
+* Key Bindings
+[[file:README.org::*Table.el][Table of keybindings]] is in README.
+One thing we have to think about is that some keybindings are not mnemonic of command names.
+The author thought this is fine and rather reasonable because the bindings follow the Spacemacs
+convention (eg. ~n~ for new, ~e~ for export, ~c~ for create, etc.), but also thought it is acceptable to
+change bindings.
+
+#+NAME: set-keybindings
+#+BEGIN_SRC emacs-lisp :results silent :exports code :noweb yes :eval never
+  (defun table-manipulation/init-table ()
+    (use-package table
+      :config
+      (progn
+        (spacemacs/declare-prefix "xT" "Table.el")
+        (spacemacs/set-leader-keys
+          "xT." 'spacemacs/table-manipulation-transient-state/body
+          "xTc" 'table-capture
+          "xTC" 'orgtbl-to-table.el
+          "xTd" 'table-release
+          "xTe" 'table-generate-source
+          "xTi" 'table-query-dimension
+          "xTn" 'table-insert
+          "xTr" 'table-recognize-table
+          "xTR" 'table-recognize
+          "xTu" 'table-unrecognize-table
+          "xTU" 'table-unrecognize
+          ))
+      ))
+#+END_SRC
+
 * Tangle
 [[package-generator][The code area]] are executed via =M-x= =org-babel-tangle= to generate =packages.el= from this file.
 
@@ -459,6 +506,8 @@ There are nothing to be decleared yet.
   <<transient-state:funcs>>
 
   <<transient-state:body>>
+
+  <<set-keybindings>>
 
   ;;; packages.el ends here
 #+END_SRC

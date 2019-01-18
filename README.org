@@ -9,6 +9,8 @@
   - [[#features][Features:]]
 - [[#install][Install]]
 - [[#key-bindings][Key bindings]]
+  - [[#tableel][Table.el]]
+  - [[#table-manipulation-transient-state][Table manipulation transient state]]
 - [[#for-contributers-and-power-users][For Contributers and Power-Users]]
 
 * Description
@@ -16,6 +18,9 @@ This layer adds support for editing =table.el= more intuitive ways through
 =table-manipulation-transient-state=.
 
 ** Features:
+This layer adds key bindings to functions from =table.el=, which allows you to create /
+convert / export tables in buffer.
+
 The followings are the list of commands been implemented as a transient-state.
 See [[*Key bindings][Key bindings]] for how-to-use.
 - jump to next/previous cells
@@ -30,44 +35,33 @@ The _table-editing buffer_ is good for editing _data_ in each cells,
 while _transient-state_ works well for editing _structures_ of table.
 
 [[./img/table-manipulation.png]]
-:DIAGRAM:
-+-----------+-----------------------+-------------+-----------+------------+
-|-> SPC o T |---------------------> |------------>|---------->|----------v |
-+-----------+-----------------------+-------------+-----------+------------+
-|           | -> org-edit-table.el  |             |           |            |
-|           |                       |   #<table   |-> SPC o T |  #<table   |
-|#<Original |      <- ,, / ,c       |   editing   |           |manipulation|
-|  Buffer>  |      (save tbl)       |   Buffer>   |           | transient  |
-|           |      <- ,k / ,a       |             |  <- RET   |   state>   |
-|           |      (abort tbl)      |             |           |            |
-+-----------+-----------------------+-------------+-----------+------------+
-|^----------|<--------------------- |<------------|<----------|<- q / Q    |
-+-----------+-----------------------+-------------+-----------+------------+
-:END:
-
-Note that ~SPC o T~ is [[c:config-example][an example]] of key binding to =dotspacemacs-configuration-layers= in this table.
 
 * Install
 To install this private configuration layer, clone it under =.../path/to/.emacs.d/private/=.
 Or, follow the instruction written in [[file:layer-manager.org::*Install%20This%20Layer][this file]].
 
-To use this configuration layer, add it to your =~/.spacemacs=. You will need to
-add =table-manipulation= to the existing =dotspacemacs-configuration-layers= list in this
-file.
-
-Add following setting in =dotspacemacs/user-config= to enable key binding.
-="oT"= is one example (o is vacant for user-defined command); so customize whatever you prefer.
-
-#+NAME: c:config-example
-#+BEGIN_SRC emacs-lisp :eval never :exports code
-  (spacemacs/set-leader-keys "oT"
-    'spacemacs/table-manipulation-transient-state/body)
-#+END_SRC
+To use this configuration layer, add it to your =~/.spacemacs=. You will need to add
+=table-manipulation= to the existing =dotspacemacs-configuration-layers= list in this file.
 
 * Key bindings
-Key bindings for =table-manipulation-transient-state=.
+** Table.el
 
-| Key Binding | Description                                                            |
+| Key binding     | Description                                                                 |
+|-----------------+-----------------------------------------------------------------------------|
+| ~SPC x T~       | +table.el prefix                                                            |
+| ~SPC x T .~     | [[*Table manipulation transient state][table-manipulation-transient-state]] |
+| ~SPC x T c~     | create table from structured region                                         |
+| ~SPC x T C~     | convert org-mode table <-> table.el                                         |
+| ~SPC x T d~     | delete table skelton from table                                             |
+| ~SPC x T e~     | export table to other markup languages(html/latex/cals)                     |
+| ~SPC x T i~     | get information of table at point                                           |
+| ~SPC x T n~     | create new table                                                            |
+| ~SPC x T r / R~ | recognize table at point / all table in buffer                              |
+| ~SPC x T u / U~ | unrecognize table at point / all table in buffer                            |
+
+** Table manipulation transient state
+
+| Key binding | Description                                                            |
 |-------------+------------------------------------------------------------------------|
 | ~n~         | jump to next cell                                                      |
 | ~p~         | jump to previous cell                                                  |
@@ -119,7 +113,6 @@ Key bindings for =table-manipulation-transient-state=.
 | ~Q~         | quit transient-state and abort the changes in the table-editing buffer |
 | ~u~         | undo                                                                   |
 | ~C-r~       | redo                                                                   |
-|-------------+------------------------------------------------------------------------|
 
 * For Contributers and Power-Users
 There is more detailed documentation in [[file:layer-manager.org][Layer Manager]] file.
